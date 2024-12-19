@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import Column from "./Column";
 import type { StatusType } from "../data/useTaskStore";
 import {
@@ -24,25 +24,17 @@ const ColumnContainer = () => {
   //   })
   // );
 
-  const getTaskId = (id: number) => {
-    return tasks.findIndex((el) => el.id === id);
-  };
+console.table(tasks)
   const handleDragEnd = (e: DragEndEvent) => {
     const { over, active } = e;
+     const currentItemStatus = tasks.find(el => el.id === active.id)?.status
 
-    if (over!.id == active.id || !over) return;
-    console.log(over, active);
+    if (over!.id == active.id || !over || currentItemStatus === over!.id) return;
+  
     const statusColumn = over?.id as StatusType | number;
     const TaskId = active.id as number;
-    if (typeof over!.id === "number") {
-      const oldIndex = getTaskId(active.id as number);
-      const newIndex = getTaskId(over!.id);
-      const newPosiArray = arrayMove(tasks, oldIndex, newIndex);
-      setTasksPosi(newPosiArray);
-    }else{
+    setStatus(TaskId , statusColumn as StatusType)
 
-      setStatus(TaskId , statusColumn as StatusType)
-    }
   };
   return (
     <div className=" flex flex-grow mb-3 gap-8 items-stretch ">

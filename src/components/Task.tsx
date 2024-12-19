@@ -3,6 +3,8 @@ import type { ITask } from "../data/useTaskStore";
 import { useDraggable } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import useTaskStore from "../data/useTaskStore";
+import { input } from "motion/react-client";
+import { Reorder } from "motion/react";
 type TaskProps = {
   todoTask: ITask;
 };
@@ -20,13 +22,13 @@ const Task = ({ todoTask }: TaskProps) => {
     console.log("start edit");
   };
   const handleEditDone = () => {
-    console.log(inputRef.current?.value);
-    console.log("done");
-    // updateTask(todoTask.id , inputRef.current!.value )
-  };
-  const handleChange = (e: FormEvent) => {
-    e.preventDefault();
-   console.log(inputRef.current)
+    
+    console.log(inputRef.current!.value);
+    
+    updateTask(todoTask.id, inputRef.current?.value!);
+
+
+    setEdit(false);
   };
 
   //? this is for sortAbleItems
@@ -44,40 +46,50 @@ const Task = ({ todoTask }: TaskProps) => {
   // } : undefined;
   const Style = transform
     ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        transform: `translate(${transform.x}px, ${transform.y}px) `,
       }
     : undefined;
   return (
-    <li
+    <div
       onDoubleClick={handleEdit}
-      {...attributes}
-      {...listeners}
       ref={setNodeRef}
+      {...attributes} 
+       {...listeners}
+
       // {...Listeners}
       //  {...Attributes}
       style={{
         // ...style ,
-        ...Style,
+        ...Style ,
       }}
       key={todoTask.id}
-      className={` p-5 border bg-violet-900 border-slate-200 rounded-md mb-3 ${
-        transform ? "z-10" : ""
+      className={` p-5 flex  border bg-violet-900 border-slate-200 rounded-md mb-3 ${
+        transform ? "z-50" : ""
       }  `}
     >
-      <form action="" onSubmit={handleEditDone}>
+      <form action="" onSubmit={(e) => {e.preventDefault()
+      console.log("submit")
+    handleEditDone()
+      } }>
         <input
           onBlur={handleEditDone}
           className={` ${
             edit ? "block" : "hidden"
           }  p-2 border text-black border-blue-300`}
           type="text"
-          onChange={handleChange}
+          ref={inputRef}
+          
         />
         <button className="hidden"></button>
       </form>
 
       <span className={` ${!edit ? "block" : "hidden"}`}> {todoTask.task}</span>
-    </li>
+      
+      {/* <pre {...attributes} {...listeners} className=" ml-auto">
+        :::
+      </pre> */}
+      
+    </div>
   );
 };
 
